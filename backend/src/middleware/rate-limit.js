@@ -1,6 +1,6 @@
 const { AppError } = require("../errors");
 
-function createChatRateLimit({ limit = 10, windowMs = 60_000 } = {}) {
+function createChatRateLimit({ limit = 3, windowMs = 60_000 } = {}) {
   const buckets = new Map();
 
   return (req, res, next) => {
