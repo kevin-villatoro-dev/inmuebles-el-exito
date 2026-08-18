@@ -1,0 +1,17 @@
+# ------------------------------------------
+# Dependencies
+# ------------------------------------------
+/vendor/
+/node_modules/
+/pnpm-lock.yaml
+
+# ------------------------------------------
+# Environment Variables
+# ------------------------------------------
+.env
+.env.backup
+.env.production
+.env.staging
+.env.testing
+.env.dusk.*
+auth.json
