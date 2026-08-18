@@ -1,0 +1,45 @@
+{
+  "name": "inmuebles-el-exito-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interfaz React de Inmuebles el Éxito.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest --runInBand",
+    "secrets:check": "node ../scripts/check-secrets.js"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@babel/core": "7.29.7",
+    "@babel/preset-env": "7.29.2",
+    "@babel/preset-react": "7.28.5",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/manrope": "5.3.0",
+    "@fontsource/sora": "5.3.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.2",
+    "@vitejs/plugin-react": "5.1.1",
+    "babel-jest": "30.4.1",
+    "jest": "30.4.2",
+    "jest-environment-jsdom": "30.4.1",
+    "tailwindcss": "4.3.3",
+    "vite": "7.3.6"
+  },
+  "allowScripts": {
+    "unrs-resolver@1.12.2": true,
+    "esbuild@0.28.2": true
+  },
+  "overrides": {
+    "@babel/runtime": "7.29.7"
+  }
+}
