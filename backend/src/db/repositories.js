@@ -306,7 +306,7 @@ function createRepositories(db) {
     const minimumPriceMatch = normalized.match(/(?:mas de|más de|desde|mayor a)\s*(?:q|gtq)?\s*([\d,.]+)/i);
     const maxPrice = priceMatch ? Number(priceMatch[1].replace(/[,]/g, "")) : null;
     const minPrice = minimumPriceMatch ? Number(minimumPriceMatch[1].replace(/[,]/g, "")) : null;
-    const codeMatches = [...message.matchAll(/\b([a-z]{1,3}-?\d{1,4})\b/gi)].map((match) => match[1]);
+    const codeMatches = [...message.matchAll(/\b([a-z]{1,3}-?\d{1,4})\b/gi)].map((match) => match[1]).filter((code) => !/^(q|gtq)/i.test(code));
     const clauses = ["is_active = 1"];
     const values = [];
 
