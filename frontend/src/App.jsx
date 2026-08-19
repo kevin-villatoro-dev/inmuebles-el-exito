@@ -199,7 +199,7 @@ export default function App() {
           <button className="user-chip" onClick={logout} type="button"><span>{user.name.split(" ").map((part) => part[0]).join("")}</span><strong>{user.name}</strong><small>Salir</small></button>
         </header>
         {view === "catalog" && <CatalogPanel error={catalogError} filters={filters} loading={catalogLoading || isFilterPending} onApply={applyFilters} onFiltersChange={changeFilter} onOpen={openProperty} properties={properties} total={catalogTotal} />}
-        {view === "assistant" && <section className="assistant-layout"><HistoryPanel activeId={currentConversation?.id} conversations={conversations} loading={historyLoading} onNew={() => setCurrentConversation(null)} onSelect={selectConversation} /><ChatPanel conversation={currentConversation} onCancel={cancelChat} onOpenProperty={openProperty} onSeedConsumed={() => setChatSeed("")} onSend={sendChat} seed={chatSeed} /></section>}
+        {view === "assistant" && <section className="assistant-layout"><HistoryPanel activeId={currentConversation?.id} conversations={conversations} loading={historyLoading} onNew={() => setCurrentConversation(null)} onSelect={selectConversation} /><ChatPanel conversationId={currentConversation?.id} onCancel={cancelChat} onOpenProperty={openProperty} onSeedConsumed={() => setChatSeed("")} onSend={sendChat} seed={chatSeed} /></section>}
         {view === "metrics" && user.role === "admin" && <MetricsPanel loading={metricsLoading} metrics={metrics} onSynchronize={synchronize} syncStatus={catalogStatus} syncing={syncing} />}
       </main>
       <PropertyDetail onAsk={askAboutProperty} onClose={() => setSelectedProperty(null)} property={selectedProperty} />

@@ -407,10 +407,31 @@ function createRepositories(db) {
     return getRecentSources.all(conversationId).map((row) => Number(row.property_id));
   }
 
-  function getConversationHistory(conversationId, userId) {
+  function getConversationHistory(conversationId, userId, { limit = 20, cursor = null } = {}) {
     const conversation = getConversationForUser.get(conversationId, userId);
     if (!conversation) return null;
-    const messages = conversationMessages.all(conversationId);
+
+    let query = `
+      SELECT messages.*, interactions.status AS interaction_status, interactions.error_code
+      FROM messages
+      JOIN interactions ON interactions.id = messages.interaction_id
+      WHERE messages.conversation_id = ?
+    `;
+    const params = [conversationId];
+
+    if (cursor) {
+      query += ` AND messages.id < ?`;
+      params.push(cursor);
+    }
+
+    query += ` ORDER BY messages.created_at DESC, messages.id DESC LIMIT ?`;
+    params.push(limit + 1);
+
+    const allMessages = db.prepare(query).all(...params);
+    const hasMore = allMessages.length > limit;
+    const messages = hasMore ? allMessages.slice(0, limit) : allMessages;
+    const nextCursor = hasMore ? messages[messages.length - 1].id : null;
+
     const ids = messages.map((message) => Number(message.id));
     const sourcesByMessage = new Map();
     if (ids.length) {
@@ -435,12 +456,14 @@ function createRepositories(db) {
         sourcesByMessage.set(Number(source.message_id), list);
       }
     }
+
+    const reversedMessages = messages.reverse();
     return {
       id: Number(conversation.id),
       title: conversation.title,
       createdAt: conversation.created_at,
       updatedAt: conversation.updated_at,
-      messages: messages.map((message) => ({
+      messages: reversedMessages.map((message) => ({
         id: Number(message.id),
         interactionId: message.interaction_id,
         role: message.role,
@@ -449,7 +472,9 @@ function createRepositories(db) {
         errorCode: message.error_code,
         createdAt: message.created_at,
         sources: sourcesByMessage.get(Number(message.id)) || []
-      }))
+      })),
+      hasMore,
+      nextCursor
     };
   }
 

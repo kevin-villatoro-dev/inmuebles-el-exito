@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Icon } from "./Icon";
-import { formatCurrency } from "../lib/format";
+import { formatCurrency, formatTime } from "../lib/format";
+import { api } from "../api";
 
 const MAX_LENGTH = 1000;
 
@@ -33,16 +34,74 @@ function MessageSources({ sources, onOpenProperty }) {
   );
 }
 
-export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel, onOpenProperty }) {
+export function ChatPanel({ conversationId, seed, onSeedConsumed, onSend, onCancel, onOpenProperty }) {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(null);
   const [error, setError] = useState("");
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [voiceState, setVoiceState] = useState("idle");
   const [charWarning, setCharWarning] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [cursor, setCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
   const controllerRef = useRef(null);
   const recognitionRef = useRef(null);
   const textareaRef = useRef(null);
+  const threadRef = useRef(null);
+
+  const loadMessages = useCallback(async (conversationId, pageCursor = null) => {
+    if (!conversationId) return;
+    if (!pageCursor) setInitialLoading(true);
+
+    try {
+      const data = await api.conversation(conversationId, { limit: 5, cursor: pageCursor });
+
+      if (pageCursor) {
+        setMessages((prev) => [...data.messages, ...prev]);
+      } else {
+        setMessages(data.messages);
+      }
+
+      setHasMore(data.hasMore);
+      setCursor(data.nextCursor);
+    } catch (err) {
+      setError(err.message || "No fue posible cargar la conversación.");
+    } finally {
+      setInitialLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (conversationId) {
+      setMessages([]);
+      setCursor(null);
+      setHasMore(false);
+      loadMessages(conversationId);
+    }
+  }, [conversationId, loadMessages]);
+
+  useEffect(() => {
+    if (!initialLoading && messages.length > 0 && threadRef.current) {
+      threadRef.current.scrollTop = threadRef.current.scrollHeight;
+    }
+  }, [initialLoading, messages.length]);
+
+  async function loadMore() {
+    if (!hasMore || loadingMore || !conversationId) return;
+    setLoadingMore(true);
+
+    const scrollHeightBefore = threadRef.current?.scrollHeight || 0;
+    await loadMessages(conversationId, cursor);
+
+    if (threadRef.current) {
+      const scrollHeightAfter = threadRef.current.scrollHeight;
+      threadRef.current.scrollTop += scrollHeightAfter - scrollHeightBefore;
+    }
+
+    setLoadingMore(false);
+  }
 
   useEffect(() => {
     setVoiceSupported(Boolean(window.SpeechRecognition || window.webkitSpeechRecognition));
@@ -82,7 +141,10 @@ export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel
     setError("");
     setMessage("");
     try {
-      await onSend({ requestId, conversationId: conversation?.id, message: content }, controller.signal);
+      const result = await onSend({ requestId, conversationId, message: content }, controller.signal);
+      if (result?.conversationId) {
+        await loadMessages(result.conversationId);
+      }
     } catch (requestError) {
       if (requestError.name !== "AbortError") setError(requestError.message || "No fue posible enviar la consulta.");
     } finally {
@@ -125,31 +187,42 @@ export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel
     recognition.start();
   }
 
-  const messages = conversation?.messages || [];
   return (
     <section className="chat-panel" aria-labelledby="assistant-title">
       <header className="chat-header">
         <div><p className="eyebrow">Asistente fundamentado</p><h1 id="assistant-title">Pregunta con el catálogo en la mesa.</h1></div>
         <span className="grounding-badge"><Icon name="spark" size={15} />Solo datos recuperados</span>
       </header>
-      <div aria-live="polite" className="chat-thread">
-        {!messages.length && !pending && (
+      <div ref={threadRef} aria-live="polite" className="chat-thread">
+        {hasMore && (
+          <button className="load-more-button" disabled={loadingMore} onClick={loadMore} type="button">
+            {loadingMore ? "Cargando..." : "↑ Cargar más anteriores"}
+          </button>
+        )}
+        {initialLoading && (
+          <div className="chat-empty">
+            <Icon name="message" size={28} />
+            <h2>Cargando conversación...</h2>
+          </div>
+        )}
+        {!initialLoading && !messages.length && !pending && (
           <div className="chat-empty">
             <Icon name="message" size={28} />
             <h2>Empieza por una necesidad concreta</h2>
-            <p>Prueba: “¿Qué lotes disponibles hay en Veluna por menos de Q200,000?”</p>
+            <p>Prueba: "¿Qué lotes disponibles hay en Veluna por menos de Q200,000?"</p>
           </div>
         )}
         {messages.map((item) => (
           <article className={`message-bubble ${item.role}`} key={item.id}>
             <span className="message-role">{item.role === "user" ? "Tu consulta" : "Inmuebles el Éxito"}</span>
+            <span className="message-time">{formatTime(item.createdAt)}</span>
             <p>{item.content}</p>
             {item.role === "assistant" && <MessageSources onOpenProperty={onOpenProperty} sources={item.sources} />}
           </article>
         ))}
         {pending && (
           <>
-            <article className="message-bubble user"><span className="message-role">Tu consulta</span><p>{pending.content}</p></article>
+            <article className="message-bubble user"><span className="message-role">Tu consulta</span><span className="message-time">{formatTime(new Date())}</span><p>{pending.content}</p></article>
             <article className="message-bubble assistant pending"><span className="message-role">Inmuebles el Éxito</span><p><span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" /> Buscando en el catálogo...</p><button onClick={cancel} type="button">Cancelar consulta</button></article>
           </>
         )}

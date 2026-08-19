@@ -135,7 +135,9 @@ function createApp({ db, config, catalogService, catalogClient, assistantService
 
   app.get("/api/conversations/:id", (req, res, next) => {
     try {
-      const conversation = repositories.getConversationHistory(Number(req.params.id), req.user.id);
+      const limit = req.query.limit ? Math.min(Number(req.query.limit), 50) : 20;
+      const cursor = req.query.cursor ? Number(req.query.cursor) : null;
+      const conversation = repositories.getConversationHistory(Number(req.params.id), req.user.id, { limit, cursor });
       if (!conversation) throw new AppError("La conversación no existe.", { status: 404, code: "CONVERSATION_NOT_FOUND" });
       res.json({ data: conversation });
     } catch (error) {

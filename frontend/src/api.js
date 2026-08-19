@@ -41,7 +41,13 @@ export const api = {
   property: (id) => request(`/api/properties/${id}`),
   synchronize: () => request("/api/catalog/sync", { method: "POST" }),
   conversations: () => request("/api/conversations"),
-  conversation: (id) => request(`/api/conversations/${id}`),
+  conversation: (id, { limit, cursor } = {}) => {
+    const params = new URLSearchParams();
+    if (limit) params.set("limit", limit);
+    if (cursor) params.set("cursor", cursor);
+    const query = params.toString();
+    return request(`/api/conversations/${id}${query ? `?${query}` : ""}`);
+  },
   chat: (payload, signal) => request("/api/chat", { method: "POST", body: JSON.stringify(payload), signal }),
   cancelInteraction: (id) => request(`/api/interactions/${id}/cancel`, { method: "POST" }),
   metrics: () => request("/api/metrics")
