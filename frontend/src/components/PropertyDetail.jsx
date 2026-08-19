@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Icon } from "./Icon";
 import { formatCurrency, formatDate } from "../lib/format";
 
@@ -8,8 +8,11 @@ function DetailItem({ label, value }) {
 }
 
 export function PropertyDetail({ property, onClose, onAsk }) {
+  const closeRef = useRef(null);
+
   useEffect(() => {
     if (!property) return undefined;
+    closeRef.current?.focus();
     const closeOnEscape = (event) => {
       if (event.key === "Escape") onClose();
     };
@@ -23,7 +26,7 @@ export function PropertyDetail({ property, onClose, onAsk }) {
   return (
     <div className="detail-backdrop" role="presentation" onMouseDown={onClose}>
       <aside aria-label={`Detalle de ${property.propertyCode}`} aria-modal="true" className="detail-panel" onMouseDown={(event) => event.stopPropagation()} role="dialog">
-        <button aria-label="Cerrar detalle" className="icon-button detail-close" onClick={onClose} type="button"><Icon name="close" /></button>
+        <button ref={closeRef} aria-label="Cerrar detalle" className="icon-button detail-close" onClick={onClose} type="button"><Icon name="close" /></button>
         <div className="detail-hero">
           {images.length ? <img alt={`Galería de ${property.projectName || property.propertyCode}`} src={images[0].url} /> : <div className="detail-placeholder">{property.propertyCode}</div>}
           <span className={`availability ${property.status === "disponible" ? "available" : ""}`}>{property.status || "Sin estado"}</span>
