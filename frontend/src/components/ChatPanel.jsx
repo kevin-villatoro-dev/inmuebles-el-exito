@@ -1,6 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Icon } from "./Icon";
 import { formatCurrency } from "../lib/format";
+
+const MAX_LENGTH = 1000;
+
+function sanitizeInput(value) {
+  return value
+    .replace(/[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F]/g, " ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&[a-z]+;|&#\d+;|&#x[a-f0-9]+;/gi, "");
+}
 
 function createRequestId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -30,8 +39,10 @@ export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel
   const [error, setError] = useState("");
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [voiceState, setVoiceState] = useState("idle");
+  const [charWarning, setCharWarning] = useState(false);
   const controllerRef = useRef(null);
   const recognitionRef = useRef(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     setVoiceSupported(Boolean(window.SpeechRecognition || window.webkitSpeechRecognition));
@@ -48,10 +59,21 @@ export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel
     recognitionRef.current?.stop();
   }, []);
 
+  const handleInputChange = useCallback((event) => {
+    const raw = event.target.value;
+    const sanitized = sanitizeInput(raw);
+    setMessage(sanitized);
+    setCharWarning(sanitized.length > MAX_LENGTH * 0.9 && sanitized.length <= MAX_LENGTH);
+  }, []);
+
   async function submit(event) {
     event.preventDefault();
-    const content = message.trim();
+    const content = sanitizeInput(message).replace(/\r?\n+/g, " ").replace(/\s+/g, " ").trim();
     if (!content || pending) return;
+    if (content.length > MAX_LENGTH) {
+      setError(`La consulta puede tener hasta ${MAX_LENGTH} caracteres.`);
+      return;
+    }
 
     const requestId = createRequestId();
     const controller = new AbortController();
@@ -94,7 +116,7 @@ export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel
       for (let index = event.resultIndex; index < event.results.length; index += 1) {
         transcript += event.results[index][0].transcript;
       }
-      setMessage(transcript.trim());
+      setMessage(sanitizeInput(transcript));
       setVoiceState(event.results[event.results.length - 1].isFinal ? "review" : "listening");
     };
     recognition.onerror = () => setVoiceState("error");
@@ -135,9 +157,22 @@ export function ChatPanel({ conversation, seed, onSeedConsumed, onSend, onCancel
       {error && <p className="inline-error" role="alert">{error}</p>}
       <form className="chat-composer" onSubmit={submit}>
         <label className="sr-only" htmlFor="chat-message">Consulta sobre el catálogo</label>
-        <textarea id="chat-message" maxLength="1000" onChange={(event) => setMessage(event.target.value)} placeholder="Escribe una consulta sobre una propiedad..." rows="2" value={message} />
+        <div className="textarea-wrapper">
+          <textarea
+            ref={textareaRef}
+            id="chat-message"
+            maxLength={MAX_LENGTH}
+            onChange={handleInputChange}
+            placeholder="Pregunta sobre propiedades, precios, ubicación o disponibilidad..."
+            rows="2"
+            value={message}
+          />
+          <span className={`char-counter ${charWarning ? "warning" : ""} ${message.length >= MAX_LENGTH ? "limit" : ""}`}>
+            {message.length}/{MAX_LENGTH}
+          </span>
+        </div>
         <div className="composer-actions">
-          <span className="voice-note">{voiceState === "listening" ? "Escuchando..." : voiceState === "review" ? "Revisa la transcripción antes de enviar." : voiceState === "error" ? "No fue posible transcribir. Escribe tu consulta." : "No compartas datos de contacto."}</span>
+          <span className="voice-note">{voiceState === "listening" ? "Escuchando..." : voiceState === "review" ? "Revisa la transcripción antes de enviar." : voiceState === "error" ? "No fue posible transcribir. Escribe tu consulta." : "Puedo ayudarte con propiedades, precios y ubicación."}</span>
           <div>
             {voiceSupported && <button aria-label="Dictar consulta" className={`icon-button voice-button ${voiceState === "listening" ? "is-listening" : ""}`} onClick={startVoice} type="button"><Icon name="mic" /></button>}
             <button aria-label="Enviar consulta" className="send-button" disabled={!message.trim() || Boolean(pending)} type="submit"><Icon name="send" /></button>
