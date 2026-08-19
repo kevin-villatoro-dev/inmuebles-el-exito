@@ -52,7 +52,7 @@ img { display: block; max-width: 100%; }
 
 .brand-mark { align-items: center; color: var(--brand-navy); display: inline-flex; gap: .65rem; min-width: 0; }
 .brand-symbol { color: var(--brand-navy); flex: 0 0 auto; height: 2.5rem; width: 2.5rem; }
-.brand-name { display: flex; flex-direction: column; font-family: "Sora", sans-serif; font-size: .73rem; letter-spacing: -.04em; line-height: 1.02; text-transform: lowercase; }
+.brand-name { display: flex; flex-direction: column; font-family: "Sora", sans-serif; font-size: .73rem; letter-spacing: -.04em; line-height: 1.02; }
 .brand-name strong { font-size: .83rem; font-weight: 700; }
 .brand-name span { color: var(--brand-green); font-weight: 600; }
 
@@ -66,15 +66,15 @@ img { display: block; max-width: 100%; }
 .profile-intro { background: var(--brand-navy); color: white; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding: clamp(3rem, 8vw, 8rem); position: relative; }
 .profile-intro::after { background: linear-gradient(145deg, transparent 0 47%, color-mix(in srgb, var(--brand-green) 45%, transparent) 47% 48%, transparent 48%); content: ""; inset: 0; opacity: .7; pointer-events: none; position: absolute; }
 .profile-intro > * { position: relative; z-index: 1; }
-.profile-intro .brand-mark { color: white; margin-bottom: clamp(4rem, 14vh, 9rem); }
+.profile-intro .brand-mark { color: white; margin-bottom: 1rem; }
 .profile-intro .brand-symbol { color: white; }
 .profile-intro .brand-name span { color: var(--brand-gold); }
 .profile-intro .eyebrow { color: var(--brand-gold); }
-.profile-intro h1 { font-family: "Sora", sans-serif; font-size: clamp(2.25rem, 5vw, 4.5rem); font-weight: 600; letter-spacing: -.075em; line-height: .98; margin: 0; max-width: 10ch; }
-.profile-intro > p:not(.eyebrow) { color: #d4e1e6; font-size: 1.02rem; line-height: 1.75; margin: 1.7rem 0 0; max-width: 49ch; }
-.profile-line { align-items: flex-end; display: flex; gap: .65rem; height: 7rem; margin-top: clamp(3.5rem, 8vh, 7rem); }
-.profile-line span { background: var(--brand-gold); display: block; opacity: .95; width: 2.3rem; }
-.profile-line span:nth-child(1) { height: 1.2rem; }.profile-line span:nth-child(2) { height: 2.5rem; }.profile-line span:nth-child(3) { height: 4rem; }.profile-line span:nth-child(4) { height: 5.5rem; }.profile-line span:nth-child(5) { height: 7rem; }
+.profile-intro h1 { font-family: "Sora", sans-serif; font-size: clamp(1.6rem, 3.5vw, 3.15rem); font-weight: 600; letter-spacing: -.075em; line-height: .98; margin: 0; max-width: 10ch; }
+.profile-intro > p:not(.eyebrow) { color: #d4e1e6; font-size: 1.02rem; line-height: 1.75; margin: .3rem 0 0; max-width: 49ch; }
+.profile-line { align-items: flex-end; display: flex; gap: .46rem; height: 4.9rem; margin-top: .3rem; }
+.profile-line span { background: var(--brand-gold); display: block; opacity: .95; width: 1.61rem; }
+.profile-line span:nth-child(1) { height: .84rem; }.profile-line span:nth-child(2) { height: 1.75rem; }.profile-line span:nth-child(3) { height: 2.8rem; }.profile-line span:nth-child(4) { height: 3.85rem; }.profile-line span:nth-child(5) { height: 4.9rem; }
 .profile-choice { align-self: center; margin: 0 auto; max-width: 30rem; padding: 3rem; width: 100%; }
 .profile-choice h2 { color: var(--brand-navy); font-family: "Sora", sans-serif; font-size: clamp(1.7rem, 3vw, 2.5rem); letter-spacing: -.06em; line-height: 1; margin: 0; }
 .profile-choice > .muted { font-size: .88rem; line-height: 1.6; margin-top: .75rem; }
@@ -118,7 +118,7 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 760px) {
-  .profile-shell { display: block; }.profile-intro { min-height: 58vh; padding: 2rem; }.profile-intro .brand-mark { margin-bottom: 3.5rem; }.profile-intro h1 { font-size: clamp(2.3rem, 12vw, 3.4rem); }.profile-intro > p:not(.eyebrow) { font-size: .88rem; }.profile-line { height: 4rem; margin-top: 2.5rem; }.profile-line span:nth-child(5) { height: 4rem; }.profile-line span:nth-child(4) { height: 3.1rem; }.profile-line span:nth-child(3) { height: 2.4rem; }.profile-line span:nth-child(2) { height: 1.7rem; }.profile-line span:nth-child(1) { height: 1rem; }.profile-choice { padding: 2.5rem 1.5rem; }
+  .profile-shell { display: block; }.profile-intro { min-height: 58vh; padding: 2rem; }.profile-intro .brand-mark { margin-bottom: 1rem; }.profile-intro h1 { font-size: clamp(1.6rem, 8.4vw, 2.4rem); }.profile-intro > p:not(.eyebrow) { font-size: .88rem; }.profile-line { height: 2.8rem; margin-top: .3rem; }.profile-line span:nth-child(5) { height: 2.8rem; }.profile-line span:nth-child(4) { height: 2.17rem; }.profile-line span:nth-child(3) { height: 1.68rem; }.profile-line span:nth-child(2) { height: 1.19rem; }.profile-line span:nth-child(1) { height: .7rem; }.profile-choice { padding: 2.5rem 1.5rem; }
   .app-shell { display: block; }.app-sidebar { align-items: center; background: white; border-right: 0; border-top: 1px solid var(--brand-line); bottom: 0; display: flex; flex-direction: row; height: 4.35rem; min-height: 0; padding: .35rem .65rem; position: fixed; top: auto; width: 100%; z-index: 20; }.app-sidebar > .brand-mark, .sidebar-foot { display: none; }.main-nav { display: grid; gap: 0; grid-template-columns: repeat(3, 1fr); margin: 0; width: 100%; }.nav-button { align-items: center; flex-direction: column; font-size: .55rem; gap: .18rem; justify-content: center; padding: .4rem; text-align: center; }.nav-button.active { box-shadow: inset 0 3px 0 var(--brand-gold); }.workspace { padding: 0 1rem 6rem; }.topbar { height: 4.3rem; }.topbar > p { font-size: .52rem; max-width: 15rem; }.user-chip strong { display: none; }
   .catalog-panel { padding-top: 1.75rem; }.catalog-hero { align-items: flex-start; display: grid; }.catalog-hero h1 { font-size: clamp(2rem, 11vw, 3rem); }.hero-coordinate { width: fit-content; }.parcel-rail { display: block; margin: 2rem 0 1rem; }.parcel-rail-heading { margin-bottom: 1rem; }.parcel-track { grid-template-columns: 5.5rem minmax(0, 1fr); }.parcel-cells { overflow-x: auto; padding-bottom: .25rem; }.filter-board { grid-template-columns: 1fr 1fr; padding: .65rem; }.filter-search { grid-column: 1 / -1; }.filter-button { grid-column: 1 / -1; }.catalog-results-heading { margin: 2rem 0 1rem; }.catalog-results-heading h2 { font-size: 1.15rem; }.property-grid { gap: .75rem; grid-template-columns: 1fr; }.property-image { height: 12.5rem; }
   .detail-panel { max-width: 100%; width: 100%; }.detail-hero { height: 13rem; }.detail-content { padding: 1.5rem 1.2rem 6rem; }
