@@ -1,17 +1,51 @@
-# ------------------------------------------
-# Dependencies
-# ------------------------------------------
-/vendor/
-/node_modules/
-/pnpm-lock.yaml
+# Dependencies and package-manager caches
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.pnp.*
 
-# ------------------------------------------
-# Environment Variables
-# ------------------------------------------
+# Environment and credentials
 .env
-.env.backup
-.env.production
-.env.staging
-.env.testing
-.env.dusk.*
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.crt
+credentials*.json
 auth.json
+
+# Local databases and runtime data
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+data/
+
+# Build, test, and debug output
+dist/
+.vite/
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+*.log
+*.pid
+*.pid.lock
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Private source material. The committed test fixture is anonymized.
+/example.txt
+/backend/test/fixtures/*.private.json

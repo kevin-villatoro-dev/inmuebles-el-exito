@@ -1,0 +1,87 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1001,
+      "propiedad": "A-1",
+      "area": 126,
+      "tipo": "Lote",
+      "clase_tipo": "Esquina",
+      "modelo": "126.00",
+      "ubicacion": "Manzana A",
+      "estado": "disponible",
+      "fin_de_obra": "2026-02-01 00:00:00",
+      "precio": 190000,
+      "precio_sugerido": 210000,
+      "proyectos_id": 11,
+      "largo": 7,
+      "ancho": 18,
+      "titulo": "Lote residencial de 126 m²",
+      "descripcion": "Lote de esquina con acceso a servicios básicos.",
+      "detalles": "Topografía plana y forma regular.",
+      "descripcion_corta": "Lote de esquina disponible.",
+      "caracteristicas": "Calles pavimentadas, drenajes, seguridad 24/7",
+      "latitud": 14.42,
+      "longitud": -90.46,
+      "updated_at": "2026-01-10T12:00:00.000000Z",
+      "proyecto": null,
+      "imagenes": []
+    },
+    {
+      "id": 1002,
+      "propiedad": "B16",
+      "area": 135,
+      "tipo": "Lote",
+      "ubicacion": "Manzana B",
+      "estado": "disponible",
+      "fase": "Fase B",
+      "precio": 150000,
+      "precio_sugerido": 165000,
+      "proyectos_id": 12,
+      "titulo": "Lote B16 de 135 m² en Proyecto Horizonte",
+      "descripcion": "Lote de 135 m² en proyecto con áreas verdes y acceso controlado.",
+      "detalles": "Forma regular y acceso a agua potable.",
+      "descripcion_corta": "Lote disponible en Manzana B.",
+      "caracteristicas": "Calles pavimentadas, áreas verdes, seguridad 24/7",
+      "latitud": 14.65,
+      "longitud": -90.42,
+      "updated_at": "2026-01-11T12:00:00.000000Z",
+      "proyecto": {
+        "id": 12,
+        "nombre_proyecto": "Proyecto Horizonte",
+        "direccion": "Ruta de ejemplo, Guatemala",
+        "tipo": "Lotes",
+        "ubicacion": "Zona Norte",
+        "estado": "Venta"
+      },
+      "imagenes": [
+        {
+          "tipo": "masterplan",
+          "url": "https://images.example.test/horizonte/masterplan.png",
+          "formato": "imagen"
+        }
+      ]
+    },
+    {
+      "id": 1003,
+      "propiedad": "C49",
+      "area": 135,
+      "tipo": "Casa",
+      "ubicacion": "Manzana C",
+      "estado": "disponible",
+      "fase": "Fase C",
+      "precio": 230000,
+      "titulo": "Lote C49 en Proyecto Horizonte",
+      "descripcion": "Registro de prueba con tipo y título inconsistentes.",
+      "caracteristicas": "Seguridad 24/7",
+      "updated_at": "2026-01-12T12:00:00.000000Z",
+      "proyecto": {
+        "id": 12,
+        "nombre_proyecto": "Proyecto Horizonte",
+        "direccion": "Ruta de ejemplo, Guatemala",
+        "ubicacion": "Zona Norte"
+      },
+      "imagenes": []
+    }
+  ]
+}
