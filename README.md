@@ -30,6 +30,11 @@
 - Panel administrativo con conversaciones, distribución por estado y propiedad más consultada.
 - Dictado opcional con Web Speech API; escribir siempre permanece disponible.
 - Branding original de Inmuebles el Éxito y experiencia adaptada a móvil y escritorio.
+- ErrorBoundary global que captura errores de renderizado sin crashear la aplicación.
+- Paginación de mensajes en chat con scroll virtual (cursor-based, 5 mensajes visibles).
+- Contador de caracteres visual en textarea del asistente (máximo 1000 caracteres).
+- Sanitización de input en frontend antes de enviar al backend.
+- Timestamp por mensaje para mejor trazabilidad.
 
 ## Arquitectura
 
@@ -136,7 +141,7 @@ Las pruebas incluyen sincronización, snapshot completo, aislamiento de historia
 
 ## Grounding y seguridad
 
-1. El navegador envía texto a `/api/chat`; nunca envía claves a OpenAI.
+1. El navegador sanitiza el input (elimina HTML, entidades, caracteres de control) antes de enviar a `/api/chat`; nunca envía claves a OpenAI.
 2. Express elimina teléfonos, correos e identificadores evidentes antes de persistir o consultar el LLM.
 3. SQLite recupera propiedades relevantes mediante código, tipo, proyecto, ubicación, precio y texto.
 4. Si no hay resultados, el backend responde sin invocar OpenAI.
@@ -145,7 +150,7 @@ Las pruebas incluyen sincronización, snapshot completo, aislamiento de historia
 7. El backend rechaza fuentes que no pertenezcan al conjunto recuperado.
 8. Cada respuesta guarda sus propiedades fuente en `message_property_sources`.
 
-Los límites iniciales son 10 consultas por minuto y sesión, hasta 5 propiedades por contexto, 600 tokens de salida y 15 segundos de timeout.
+Los límites iniciales son 3 consultas por minuto y sesión, hasta 5 propiedades por contexto, 600 tokens de salida y 15 segundos de timeout. El textarea del asistente acepta un máximo de 1000 caracteres.
 
 La voz usa `SpeechRecognition` si el navegador la expone. El audio no llega al backend ni a OpenAI, pero la transcripción puede depender del proveedor del navegador. El usuario ve y puede editar la transcripción antes de enviarla.
 
@@ -156,7 +161,6 @@ La voz usa `SpeechRecognition` si el navegador la expone. El audio no llega al b
 - Los registros con campos contradictorios se marcan para revisión; el asistente debe declararlos, no resolverlos por su cuenta.
 - El grounding reduce alucinaciones, pero una recuperación incompleta o una respuesta incorrecta del modelo siguen siendo riesgos residuales.
 - Web Speech API no tiene soporte uniforme entre navegadores; la entrada de texto es el fallback permanente.
-- No hay CI ni despliegue público en esta primera versión. Las pruebas se ejecutan localmente siguiendo los comandos anteriores.
 
 ## Higiene del repositorio
 
