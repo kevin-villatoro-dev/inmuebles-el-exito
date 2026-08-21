@@ -3,7 +3,7 @@ const { AppError } = require("../errors");
 function numberOrNull(value) {
   if (value === null || value === undefined || value === "") return null;
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
+  return Number.isFinite(parsed) ? Math.round(parsed * 100) / 100 : null;
 }
 
 function normalizeImages(images) {
