@@ -4,7 +4,7 @@ export function formatCurrency(value) {
     style: "currency",
     currency: "GTQ",
     currencyDisplay: "narrowSymbol",
-    maximumFractionDigits: 0
+    maximumFractionDigits: 2
   }).format(value);
 }
 

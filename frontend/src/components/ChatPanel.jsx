@@ -74,10 +74,10 @@ export function ChatPanel({ conversationId, seed, onSeedConsumed, onSend, onCanc
   }, []);
 
   useEffect(() => {
-    if (conversationId) {
       setMessages([]);
       setCursor(null);
       setHasMore(false);
+    if (conversationId) {
       loadMessages(conversationId);
     }
   }, [conversationId, loadMessages]);
